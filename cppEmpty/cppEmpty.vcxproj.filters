@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sourcecode.cpp">
+    <ClCompile Include="ENGXOR.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
