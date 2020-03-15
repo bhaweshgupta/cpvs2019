@@ -14,7 +14,7 @@ int main()
 		int arr1[100], arr2[100];
 		int flag[100] = {};
 
-
+		
 
 
 
@@ -29,7 +29,7 @@ int main()
 		}
 		for (int i = 0;i < n;i++)
 		{
-			std::cin >> arr2[i];
+			std::cin >> arr2[i];  
 		}
 
 		for (int i = 0;i < n;i++)

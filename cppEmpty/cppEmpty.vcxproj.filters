@@ -21,5 +21,11 @@
     <ClCompile Include="CHPINTU.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ADASHOP2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BREAK.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
