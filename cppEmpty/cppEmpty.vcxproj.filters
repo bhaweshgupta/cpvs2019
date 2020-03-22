@@ -30,7 +30,10 @@
     <ClCompile Include="LAZER.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Reverse.cpp">
+    <ClCompile Include="maximumsubsets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ROPECUTINTO3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
