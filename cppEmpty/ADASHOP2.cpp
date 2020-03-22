@@ -9,7 +9,19 @@ int main()
 	{
 		int r, c;
 		cin >> r >> c;
-		vector<pair<int, int>> vect;
+		
+		vector<pair<int, int>> vect;	
+		int sum = r + c;
+		sum = sum / 2;
+		if (r == 1 && c == 1)
+		{
+
+		}
+		else
+		{
+			vect.push_back(make_pair(r, c));
+			vect.push_back(make_pair(sum,sum));
+		}
 		vect.push_back(make_pair(1, 1));
 		vect.push_back(make_pair(2, 2));
 		vect.push_back(make_pair(1, 3));
