@@ -45,5 +45,8 @@
     <ClCompile Include="1324D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="STLDemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
