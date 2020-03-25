@@ -36,5 +36,14 @@
     <ClCompile Include="ROPECUTINTO3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="revserserecurison.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Subset Sum Problem Using Recursion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="1324D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
