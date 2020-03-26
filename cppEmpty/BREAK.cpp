@@ -9,6 +9,8 @@ int main()
 	cin >> t;
 	int s;
 	cin >> s;
+
+	//comment added
 	while (t--)
 	{
 		int n;
