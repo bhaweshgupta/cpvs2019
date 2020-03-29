@@ -54,5 +54,11 @@
     <ClCompile Include="SegmentTreeRangeMinimumQuery.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SUMOFGIVINRANGE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DIVISIBLITYCHECKINGIVENRANGE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
