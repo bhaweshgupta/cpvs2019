@@ -35,7 +35,7 @@ int sizecalforsegment(int n)
         return 2*pow(2, x+1) - 1;
 }
 
-void ConstructSegment(int input[],int segment[],int low,int high,int pos)
+void ConstructSegmentMIN(int input[],int segment[],int low,int high,int pos)
 {
     if (input[low] == input[high])
     {
@@ -43,11 +43,12 @@ void ConstructSegment(int input[],int segment[],int low,int high,int pos)
         return;
     }
     int mid = (low + high) / 2;
-    ConstructSegment(input, segment, low, mid, 2 * pos + 1);
-    ConstructSegment(input, segment, mid+1, high, 2 * pos + 2);
+    ConstructSegmentMIN(input, segment, low, mid, 2 * pos + 1);
+    ConstructSegmentMIN(input, segment, mid+1, high, 2 * pos + 2);
     segment[pos] = min(segment[2 * pos + 1], segment[2 * pos + 2]);
 
 }
+
 
 int RangeMinQuerey(int segment[], int qlow, int qhigh, int low, int high, int pos)
 {
@@ -65,6 +66,41 @@ int RangeMinQuerey(int segment[], int qlow, int qhigh, int low, int high, int po
 }
 
 
+void ConstructSegmentMAX(int input[], int segment[], int low, int high, int pos)
+{
+    if (input[low] == input[high])
+    {
+        segment[pos] = input[low];
+        return;
+    }
+    int mid = (low + high) / 2;
+    ConstructSegmentMAX(input, segment, low, mid, 2 * pos + 1);
+    ConstructSegmentMAX(input, segment, mid + 1, high, 2 * pos + 2);
+    segment[pos] = max(segment[2 * pos + 1], segment[2 * pos + 2]);
+
+}
+
+
+
+int RangeMaxQuery(int segment[], int qlow, int qhigh, int low, int high, int pos)
+{
+    if (qlow <= low && qhigh >= high)
+    {
+        return segment[pos];
+    }
+    if (qlow > high || low > qhigh)
+    {
+        return INT_MIN;
+    }
+    int mid = (low + high) / 2;
+    return max(RangeMaxQuery(segment, qlow, qhigh, low, mid, 2 * pos + 1), RangeMaxQuery(segment, qlow, qhigh, mid+1, high, 2 * pos + 2));
+
+}
+
+
+
+
+
 int32_t main()
 {
     int n;
@@ -79,14 +115,21 @@ int32_t main()
     for (int i = 0; i < n; i++)
         cout << input[i]<<" ";
     cout << endl;
+    
+    // low=0 high=n-1,pos=0
+    ConstructSegmentMIN(input,segment,0,n-1,0);
+    cout << RangeMinQuerey(segment, 0, 2, 0, 3, 0)<<endl;
+    cout<<RangeMinQuerey(segment, 2, 3, 0, 3, 0)<<endl;
+    
+    fill(segment, segment + segsize, INT_MIN);
 
-   
+    ConstructSegmentMAX(input, segment, 0, n - 1, 0);
 
-    //low=0 high=n-1,pos=0
-    ConstructSegment(input,segment,0,n-1,0);
-
-
-        for (int i = 0; i < segsize; i++)
+    cout << RangeMaxQuery(segment, 0, 2, 0, 3, 0) << endl;
+    cout << RangeMaxQuery(segment, 2, 3, 0, 3, 0) << endl;
+        
+    
+    for (int i = 0; i < segsize; i++)
             cout << segment[i] << " ";
 }
 
