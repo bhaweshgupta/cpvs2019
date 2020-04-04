@@ -28,13 +28,12 @@ using namespace std;
 
 int sizecalforsegment(int n)
 {
-    int x = log2(n);
+    int x = (int)log2(n);
     if (x * x == n)
         return 2 * pow(2, x) - 1;
     else
         return 2 * pow(2, x + 1) - 1;
 }
-
 void ConstructSegmentMIN(int input[], int segment[], int low, int high, int pos)
 {
     if (input[low] == input[high])
@@ -48,8 +47,6 @@ void ConstructSegmentMIN(int input[], int segment[], int low, int high, int pos)
     segment[pos] = segment[2 * pos + 1]+ segment[2 * pos + 2];
 
 }
-
-
 int RangeMinQuerey(int segment[], int qlow, int qhigh, int low, int high, int pos)
 {
     if (qlow <= low && qhigh >= high)
@@ -64,8 +61,6 @@ int RangeMinQuerey(int segment[], int qlow, int qhigh, int low, int high, int po
 
     return RangeMinQuerey(segment, qlow, qhigh, low, mid, 2 * pos + 1)+ RangeMinQuerey(segment, qlow, qhigh, mid + 1, high, 2 * pos + 2);
 }
-
-
  void updateSegmentTree(int segmentTree[], int index, int delta, int low, int high, int pos) 
 {
 
@@ -93,8 +88,7 @@ int RangeMinQuerey(int segment[], int qlow, int qhigh, int low, int high, int po
           input[index] += delta; 
           updateSegmentTree(segmentTree, index, delta, 0,inputsize-1, 0);
  }
-
- void updateSegmentTreeRange1(int segmentTree[], int startRange, int endRange, int delta, int low, int high, int pos)
+ void updateSegmentTreeRange(int segmentTree[], int startRange, int endRange, int delta, int low, int high, int pos)
  {
      if (low > high || startRange > high || endRange < low) {
          return;
@@ -106,55 +100,188 @@ int RangeMinQuerey(int segment[], int qlow, int qhigh, int low, int high, int po
      }
 
      int middle = (low + high) / 2;
-     updateSegmentTreeRange1(segmentTree, startRange, endRange, delta, low, middle, 2 * pos + 1);
-     updateSegmentTreeRange1(segmentTree, startRange, endRange, delta, middle + 1, high, 2 * pos + 2);
+     updateSegmentTreeRange(segmentTree, startRange, endRange, delta, low, middle, 2 * pos + 1);
+     updateSegmentTreeRange(segmentTree, startRange, endRange, delta, middle + 1, high, 2 * pos + 2);
      segmentTree[pos] = segmentTree[2 * pos + 1] + segmentTree[2 * pos + 2];
  }
-
  void updateSegmentTreeRange(int input[],int inputsize, int segmentTree[], int startRange, int endRange, int delta) 
  {
      for (int i = startRange; i <= endRange; i++)
      {
          input[i] += delta;
      }
-     updateSegmentTreeRange1(segmentTree, startRange, endRange, delta, 0, inputsize-1, 0);
+     updateSegmentTreeRange(segmentTree, startRange, endRange, delta, 0, inputsize-1, 0);
+ }
+
+void updateSegmentTreeRangeLazy(int segmentTree[], int lazy[], int startRange, int endRange, int delta, int low, int high, int pos)
+{
+    if (low > high)
+    {
+        return;
+    }
+
+    //make sure all propagation is done at pos. If not update tree
+    //at pos and mark its children for lazy propagation.
+    if (lazy[pos] != 0) {
+        segmentTree[pos] += lazy[pos];
+        if (low != high) { //not a leaf node
+            lazy[2 * pos + 1] += lazy[pos];
+            lazy[2 * pos + 2] += lazy[pos];
+        }
+        lazy[pos] = 0;
+    }
+
+    //no overlap condition
+    if (startRange > high || endRange < low) {
+        return;
+    }
+
+    //total overlap condition
+    if (startRange <= low && endRange >= high) {
+        segmentTree[pos] += delta;
+        if (low != high) {
+            lazy[2 * pos + 1] += delta;
+            lazy[2 * pos + 2] += delta;
+        }
+        return;
+    }
+
+    //otherwise partial overlap so look both left and right.
+    int mid = (low + high) / 2;
+    updateSegmentTreeRangeLazy(segmentTree, lazy, startRange, endRange,
+        delta, low, mid, 2 * pos + 1);
+    updateSegmentTreeRangeLazy(segmentTree, lazy, startRange, endRange,
+        delta, mid + 1, high, 2 * pos + 2);
+    segmentTree[pos] = segmentTree[2 * pos + 1] + segmentTree[2 * pos + 2];
+}
+void updateSegmentTreeRangeLazy(int input[], int inputsize, int segmentTree[], int lazy[], int startRange, int endRange, int delta)
+{
+    updateSegmentTreeRangeLazy(segmentTree, lazy, startRange, endRange, delta, 0, inputsize - 1, 0);
+}
+int rangeMinimumQueryLazy(int segmentTree[], int lazy[], int qlow, int qhigh, int low, int high, int pos) {
+
+    if (low > high)
+    {
+        return 0;
+    }
+
+    //make sure all propagation is done at pos. If not update tree
+    //at pos and mark its children for lazy propagation.
+    if (lazy[pos] != 0)
+    {
+        segmentTree[pos] += lazy[pos];
+        if (low != high) { //not a leaf node
+            lazy[2 * pos + 1] += lazy[pos];
+            lazy[2 * pos + 2] += lazy[pos];
+        }
+        lazy[pos] = 0;
+    }
+
+    //no overlap
+    if (qlow > high || qhigh < low) 
+    {
+        return 0;
+    }
+
+    //total overlap
+    if (qlow <= low && qhigh >= high) {
+        return segmentTree[pos];
+    }
+
+    //partial overlap
+    int mid = (low + high) / 2;
+    return rangeMinimumQueryLazy(segmentTree, lazy, qlow, qhigh,
+        low, mid, 2 * pos + 1)
+        + rangeMinimumQueryLazy(segmentTree, lazy, qlow, qhigh,
+            mid + 1, high, 2 * pos + 2);
+
+}
+
+int rangeMinimumQueryLazy(int segmentTree[], int lazy[], int qlow, int qhigh, int len) 
+{
+     return rangeMinimumQueryLazy(segmentTree, lazy, qlow, qhigh, 0, len - 1, 0);
  }
 
 
 
 int32_t main()
 {
-    int n;
-    cin >> n;
-    mk(input, n, int);
-    for (int i = 0; i < n; i++)    cin >> input[i];
-    int segsize = sizecalforsegment(n);
+    //int n;
+    //cin >> n;
+    //mk(input, n, int);
+    //for (int i = 0; i < n; i++)    cin >> input[i];
+    //int segsize = sizecalforsegment(n);
 
-    mk(segment, segsize, int);
-    fill(segment, segment + segsize, 0);
+    //mk(segment, segsize, int);
+    //fill(segment, segment + segsize, 0);
 
-    for (int i = 0; i < n; i++)
-        cout << input[i] << " ";
+    //for (int i = 0; i < n; i++)
+    //    cout << input[i] << " ";
+    //cout << endl;
+
+    //// low=0 high=n-1,pos=0
+
+    //ConstructSegmentMIN(input, segment, 0, n - 1, 0);
+    //cout << RangeMinQuerey(segment, 0, 2, 0, 3, 0) << endl;
+    //cout << RangeMinQuerey(segment, 2, 3, 0, 3, 0) << endl;
+    //for (int i = 0; i < segsize; i++)
+    //    cout << segment[i] << " ";
+    //updateSegmentTree(input,n, segment, 2, 10);
+    //cout << endl;
+    //cout << RangeMinQuerey(segment, 0, 2, 0, 3, 0) << endl;
+    //cout << RangeMinQuerey(segment, 2, 3, 0, 3, 0) << endl;
+    //for (int i = 0; i < segsize; i++)
+    //    cout << segment[i] << " ";
+    //updateSegmentTreeRange(input,n,segment, 1, 3, -5);
+
+    //cout << endl;
+    //for (int i = 0; i < segsize; i++)
+    //    cout << segment[i] << " ";
+   
+
+
+    //lazy propagation 
+
+    
+    int input1[] = {1,2,3,4};
+    int inputsize1 = sizeof(input1) / sizeof(input1[0]);
+    int segsize1 = sizecalforsegment(inputsize1);
+
+
+    int n = segsize1;
+    mk(segTree1, segsize1, int);
+    mk(lazy1, segsize1, int);
+    
+    fill(segTree1, segTree1 + segsize1, 0);
+    fill(lazy1, lazy1 + segsize1, 0);
+  
+    
+    ConstructSegmentMIN(input1, segTree1, 0, inputsize1 - 1, 0);
+
+    for (int i = 0; i < inputsize1; i++)
+        cout << input1[i] << " ";
     cout << endl;
 
     // low=0 high=n-1,pos=0
 
-    
-    ConstructSegmentMIN(input, segment, 0, n - 1, 0);
-    cout << RangeMinQuerey(segment, 0, 2, 0, 3, 0) << endl;
-    cout << RangeMinQuerey(segment, 2, 3, 0, 3, 0) << endl;
-    for (int i = 0; i < segsize; i++)
-        cout << segment[i] << " ";
-    updateSegmentTree(input,n, segment, 2, 10);
+    for (int i = 0; i < n; i++)
+        cout << segTree1[i] << " ";
     cout << endl;
-    cout << RangeMinQuerey(segment, 0, 2, 0, 3, 0) << endl;
-    cout << RangeMinQuerey(segment, 2, 3, 0, 3, 0) << endl;
-    for (int i = 0; i < segsize; i++)
-        cout << segment[i] << " ";
-    updateSegmentTreeRange(input,n,segment, 1, 3, -5);
 
+    updateSegmentTreeRangeLazy(input1, inputsize1, segTree1, lazy1, 0, 3, 1);
+   // updateSegmentTreeRangeLazy(input1, inputsize1, segTree1, lazy1, 0, 0, 2);
+   cout<<rangeMinimumQueryLazy(segTree1, lazy1, 0, 3, inputsize1)<<endl<<endl;
+
+
+    for (int i = 0; i < n; i++)
+        cout << lazy1[i] << " ";
     cout << endl;
-    for (int i = 0; i < segsize; i++)
-        cout << segment[i] << " ";
-    }
+
+    for (int i = 0; i < n; i++)
+        cout << segTree1[i] << " ";
+
+
+
+
+}
 
