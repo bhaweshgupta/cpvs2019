@@ -66,6 +66,62 @@ int RangeMinQuerey(int segment[], int qlow, int qhigh, int low, int high, int po
 }
 
 
+ void updateSegmentTree(int segmentTree[], int index, int delta, int low, int high, int pos) 
+{
+
+    //if index to be updated is less than low or higher than high just return.
+    if (index < low || index > high) {
+        return;
+    }
+
+    //if low and high become equal, then index will be also equal to them and update
+    //that value in segment tree at pos
+    if (low == high) {
+        segmentTree[pos] += delta;
+        return;
+    }
+    //otherwise keep going left and right to find index to be updated 
+    //and then update current tree position if min of left or right has
+    //changed.
+    int mid = (low + high) / 2;
+    updateSegmentTree(segmentTree, index, delta, low, mid, 2 * pos + 1);
+    updateSegmentTree(segmentTree, index, delta, mid + 1, high, 2 * pos + 2);
+    segmentTree[pos] =segmentTree[2 * pos + 1]+ segmentTree[2 * pos + 2];
+}
+ void updateSegmentTree(int input[],int inputsize,int segmentTree[], int index, int delta)
+ {
+          input[index] += delta; 
+          updateSegmentTree(segmentTree, index, delta, 0,inputsize-1, 0);
+ }
+
+ void updateSegmentTreeRange1(int segmentTree[], int startRange, int endRange, int delta, int low, int high, int pos)
+ {
+     if (low > high || startRange > high || endRange < low) {
+         return;
+     }
+
+     if (low == high) {
+         segmentTree[pos] += delta;
+         return;
+     }
+
+     int middle = (low + high) / 2;
+     updateSegmentTreeRange1(segmentTree, startRange, endRange, delta, low, middle, 2 * pos + 1);
+     updateSegmentTreeRange1(segmentTree, startRange, endRange, delta, middle + 1, high, 2 * pos + 2);
+     segmentTree[pos] = segmentTree[2 * pos + 1] + segmentTree[2 * pos + 2];
+ }
+
+ void updateSegmentTreeRange(int input[],int inputsize, int segmentTree[], int startRange, int endRange, int delta) 
+ {
+     for (int i = startRange; i <= endRange; i++)
+     {
+         input[i] += delta;
+     }
+     updateSegmentTreeRange1(segmentTree, startRange, endRange, delta, 0, inputsize-1, 0);
+ }
+
+
+
 int32_t main()
 {
     int n;
@@ -82,12 +138,23 @@ int32_t main()
     cout << endl;
 
     // low=0 high=n-1,pos=0
+
+    
     ConstructSegmentMIN(input, segment, 0, n - 1, 0);
     cout << RangeMinQuerey(segment, 0, 2, 0, 3, 0) << endl;
     cout << RangeMinQuerey(segment, 2, 3, 0, 3, 0) << endl;
-
-
     for (int i = 0; i < segsize; i++)
         cout << segment[i] << " ";
-}
+    updateSegmentTree(input,n, segment, 2, 10);
+    cout << endl;
+    cout << RangeMinQuerey(segment, 0, 2, 0, 3, 0) << endl;
+    cout << RangeMinQuerey(segment, 2, 3, 0, 3, 0) << endl;
+    for (int i = 0; i < segsize; i++)
+        cout << segment[i] << " ";
+    updateSegmentTreeRange(input,n,segment, 1, 3, -5);
+
+    cout << endl;
+    for (int i = 0; i < segsize; i++)
+        cout << segment[i] << " ";
+    }
 

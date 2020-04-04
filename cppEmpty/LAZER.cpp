@@ -14,7 +14,7 @@ int main()
 		int q;
 		cin >> q;
 		int arr[100001];
-		for (int i = 1;i <= n;i++)
+		for (int i = 1;i <= n;i++)	
 			cin >> arr[i];
 
 
