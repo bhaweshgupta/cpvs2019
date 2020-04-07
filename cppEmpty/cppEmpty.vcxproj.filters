@@ -60,5 +60,11 @@
     <ClCompile Include="DIVISIBLITYCHECKINGIVENRANGE.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FENWICKTREE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MINsumOFarray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
